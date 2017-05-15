@@ -419,6 +419,10 @@ def _ldflags(ldflags_str, libs, flags, libs_dir, include_dir):
         found_dyn = False
         dirs = [x[2:] for x in ldflags_str.split()
                 if x.startswith('-L')]
+        # Hack to get Codeship not to include /usr/lib64. Can't seem to figure
+        # out how to do this with flags!
+        if os.environ.get('SKIP_USR_LIB64'):
+            dirs = filter(lambda dir_: dir_ != '/usr/lib64', dirs)
         l = _ldflags(ldflags_str=ldflags_str, libs=True,
                      flags=False, libs_dir=False, include_dir=False)
         for d in dirs:
